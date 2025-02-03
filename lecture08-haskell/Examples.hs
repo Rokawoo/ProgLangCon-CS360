@@ -31,11 +31,15 @@ isThisWorking = "Yes"
 --
 
 -- Return the nth element of a list, counting from 0.
-nth :: Int -> [a] -> a          -- Type tells  us what the function does.
-nth _ [] = error "Empty list"   -- Matches anything but doesn't create a binding.
-nth 0 (x:_) = x                 -- 0th item of x cons... is x.
+nth :: Int -> [a] -> a                  -- Type tells  us what the function does.
+nth _ [] = error "Empty list"           -- Matches anything but doesn't create a binding.
+nth 0 (x:_) = x                         -- 0th item of x cons... is x.
 nth n xs = nth (n-1) (tail xs)  
 
+{-}
+cons :: a -> [a] -> [a]                 -- Any a and a list of a returns a list of a, thats what cons is.
+conds =(:)
+-}
 
 -- We use generators in this test. See Section 5.1 of PIH. [1..5] is the list
 -- containing the numbers 1 through 5, inclusive.
@@ -43,15 +47,22 @@ prop_nth_1_through_5 :: Bool
 prop_nth_1_through_5 = nth 2 [1..5] == 3
 
 -- Map a function over the elements of a list
-map :: (a -> b) -> [a] -> [b]
-map = error "map unimplemented"
+map :: (a -> b) -> [a] -> [b]           -- Takes a function a and applies it to b to create a list of b. a and b types have to remain consistent.
+map _ [] = []                           -- This is the predicate testing for the empty list.
+map f (x:xs) = f x : map f xs           -- Applied function cons the rest of the list.
 
 prop_map_inc :: Bool
 prop_map_inc = map (\x -> x + 1) [1,2,3,4,5] == [2,3,4,5,6]
 
 -- Append two lists
-append :: [a] -> [a] -> [a]
-append = error "append unimplemented"
+append :: [a] -> [a] -> [a]             -- Implies that lists must have the same type, and we smush them together.
+append []     ys = ys                   -- If the first list is empty, return the second list.
+append (x:xs) ys = x : append xs ys
+
+-- Try
+foo :: [a] -> [b] -> [c]
+foo _ _ = []                            -- For any list of a and b, return an empty list of c.
+                                        -- This is the only way to terminate the function.
 
 -- This is a general property-based test!
 prop_append_length :: [Int] -> [Int] -> Bool
