@@ -64,7 +64,7 @@ foo :: [a] -> [b] -> [c]
 foo _ _ = []                            -- For any list of a and b, return an empty list of c.
                                         -- This is the only way to terminate the function.
 
--- This is a general property-based test!
+-- This is a general property-based test! Very powerful way to test stuff.
 prop_append_length :: [Int] -> [Int] -> Bool
 prop_append_length xs ys = length (append xs ys) == length xs + length ys
 
@@ -82,14 +82,22 @@ prop_double_length xs = length (doubleEveryElement xs) == 2 * length xs
 
 -- Increment an integer
 inc :: Int -> Int
-inc = error "inc unimplemented"
+inc x = x + 1
+-- inc = \x -> x + 1                -- "\" is the lambda function.
+-- inc = (+ 1_)
+
+{-} Scheme implementation of explicit lambda function
+(define (inc x) 
+    (lambda (x) (+ x 1)))
+-}
 
 prop_inc :: Int -> Bool
 prop_inc x = inc x == x + 1
 
 -- A function that squares all elements in a list.
 squareAll :: [Int] -> [Int]
-squareAll = error "squareAll unimplemented"
+squareAll = map (\x -> x * x)
+-- squareAll xs = map (\x -> x * x) xs          -- To fully apply the function, and not partially apply it.
 
 -- We use list comprehensions in this test. See Section 5.1 of PIH. [1..5] is
 -- the list containing the numbers 1 through 5, inclusive.
@@ -108,10 +116,17 @@ prop_celsius100 = celsiusToFahrenheit 100 == 212
 
 -- Return every third element of a list
 everyThird :: [a] -> [a]
-everyThird = error "everyThird unimplemented"
+everyThird [_]          = []
+-- everyThird (_:[])    = []
+everyThird [_, _]       = []
+everyThird [_:_:x:xs]   = x : everyThird xs     -- We expand just enough to get the third element and the tail. 
 
 prop_everyThird :: Bool
 prop_everyThird = everyThird [1, 2, 3, 4, 5, 6, 7] == [3, 6]
+
+curry :: ((a, b) -> c) -> (a -> b -> c)
+--curry :: ((a, b) -> c) -> a -> b -> c
+curry f x y = f (x, y)                          -- Type here forces us to implement curry this way.
 
 -- | This main function runs all HSpec tests
 --
