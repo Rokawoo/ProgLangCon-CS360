@@ -16,18 +16,24 @@ type Var = String
 
 data Exp = Var Var
          | Const Double
+         | Neg Exp
          | Add Exp Exp
          | Mul Exp Exp
   deriving (Show)
 
 -- | Evaluate expressions
-eval :: [(Var, Double)] -> Exp -> Double
+eval :: [(Var, Double)] -> Exp -> Maybe -> Maybe Double
 eval env (Var v)     = case lookup v env of
                          Nothing -> error $ "Unbound variable: " ++ v
                          Just n  -> n
 eval _   (Const n)   = n
 eval env (Add e1 e2) = eval env e1 + eval env e2
 eval env (Mul e1 e2) = eval env e1 * eval env e2
+eval env (Div e1 0)  = Nothing 
+eval env (Div e1 e2) = eval env e1 / eval env e2
+
+
+eval 
 
 -- Compute derivative of an expressions with respect to a variable
 deriv :: Exp -> Var -> Exp
